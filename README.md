@@ -1,6 +1,6 @@
 # bridgit
 
-La busca de caminos para el agente inteligente se ha usado el algoritmo de Dijkstra con la ayuda de la libreria Networkx
+Se ha implementado el algoritmo de Dijkstra con la ayuda de la libreria Networkx para la busqueda de caminos
 
 Instrucciones para jugar:
 
