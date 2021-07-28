@@ -49,4 +49,16 @@ Inicio turnoJugador(){
 
 } Fin
 
-Inicio
+Inicio encontrarCamino(){
+  1) verifica si hay un camino entre alguno de los puntos de extremo a extremo para las etiquetas rojas, esto se hace verificando si entre nodo y nodo hay un camino con el grafo "grafoRojos"
+  2) de encontrar alguno camino compara y guarda el camino mas corto usando el algoritmo de Dijkstra
+  3) al encontrar el camino mas corto posible de ese momento se procede hacer una conexion entre los siguientes puntos de dicho camino que no tengan estre ellos un espacio pintado de rojo
+
+} Fin
+
+Inicio comprobarWin(){
+
+  1) verifica si el Jugador o la PC tienen algun camino entre sus extremos guardados en los grafos caminoRojo y caminoAzules
+  2) de ser correcto se comprueba a que grafo pertenece dicho camino y se anuncia quien ha ganado
+
+}
