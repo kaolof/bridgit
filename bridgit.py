@@ -6,8 +6,7 @@ class App():
 
     def __init__(self):
         self.ventana=Tk()
-        self.ventana.geometry("800x450")
-
+        self.ventana.geometry("600x450")
         self.listaBotonesAzules=[] #para manipulacion de botnes
         self.posicionesAzules=[]
         self.listaLabelsRojos=[] #para manipulacion de labels rojos
@@ -17,18 +16,24 @@ class App():
 
         self.inicio=[]#ubicacion del boton inicial
         self.fin=[]#ubicacion del boton final
-        #self.turnoJugador=True
-        self.win=False
 
-        self.puertoAR=[0,6,12,18,24]
-        self.puertoBR=[5,11,17,23,29]
+        self.puertoARojos=[0,6,12,18,24]
+        self.puertoBRojos=[5,11,17,23,29]
+
+        self.puertoAAzules=[0,1,2,3,4]
+        self.puertoBAzules=[25,26,27,28,29]
+
         self.grafoRojos=nx.Graph()
         self.caminoRojo=nx.Graph()
         self.caminoAzules=nx.Graph()
 
-        start=Button(self.ventana, text="START", command=lambda: [self.partida(self.listaBotonesAzules,self.posicionesAzules,self.listaLabelsRojos,self.listaPosicionesRojos,
+        start=Button(self.ventana, text="START", bg="green",fg="white", command=lambda: [self.partida(self.listaBotonesAzules,self.posicionesAzules,self.listaLabelsRojos,self.listaPosicionesRojos,
                                                                         self.listaEspacios,self.posicionesEspaciones)])
-        start.place(x=500,y=350)
+        start.place(x=400,y=200)
+
+        self.turno=Label(self.ventana, text="Turno del jugador")
+        self.turno.place(x=400,y=300)
+        self.turno.config(state="disabled")
 
         self.ventana.mainloop()
 
@@ -78,19 +83,23 @@ class App():
             for i in range(len(listaEspacios)):
                 #conexiones verticales
                 if r==posEspacios[i][0] and c==posEspacios[i][1]:
+
+                    posicion1=inicio[0][2]
+                    posicion2=fin[0][2]
                     if color=="azul":
                         listaEspacios[i].config(bg="blue")
                         #agregar nodos de los puntos Azules que ahora tienen un camino
-                        self.caminoAzules.add_node(inicio[0][2])
-                        self.caminoAzules.add_node(fin[0][2])
-                        self.caminoAzules.add_edge(inicio[0][2],fin[0][2])
+                        self.caminoAzules.add_node(posicion1)
+                        self.caminoAzules.add_node(posicion2)
+                        self.caminoAzules.add_edge(posicion1,posicion2)
+
+                        self.comprobarWin('jugador')
                     else:
                         listaEspacios[i].config(bg="red")
-                        self.caminoRojo.add_node(caminoCorto[i])
-                        self.caminoRojo.add_node(caminoCorto[i+1])
-                        self.caminoRojo.add_edge(caminoCorto[i],caminoCorto[i+1])
-                        print(nx.edges(self.caminoRojo))
-                        self.comprobarWin()
+                        self.caminoRojo.add_node(posicion1)
+                        self.caminoRojo.add_node(posicion2)
+                        self.caminoRojo.add_edge(posicion1,posicion2)
+                        self.comprobarWin('PC')
         else: #los puntos estan la en misma fila //se movio verticalmente
 
             r=inicio[0][0]
@@ -111,6 +120,7 @@ class App():
                         self.caminoAzules.add_node(inicio[0][2])
                         self.caminoAzules.add_node(fin[0][2])
                         self.caminoAzules.add_edge(inicio[0][2],fin[0][2])
+                        self.comprobarWin('jugador')
 
         return r,c
 
@@ -120,10 +130,10 @@ class App():
         r=c=0 #fila y columna del punto de conexion entre botones
         if len(self.inicio)==0:
             self.inicio.append(lista[idBoton])
-            self.inicio[0].append(idBoton)
+            #self.inicio[0].append(idBoton)
         elif len(self.fin)==0:
             self.fin.append(lista[idBoton])
-            self.fin[0].append(idBoton)
+            #self.fin[0].append(idBoton)
 
         if (self.inicio)!=0 and len(self.fin)!=0:
             r,c=self.encontrarEspacio(self.inicio,self.fin, self.listaEspacios,self.posicionesEspaciones,"azul")
@@ -145,23 +155,25 @@ class App():
                     G.remove_edge(izquierda,derecha)
 
     def encontrarCamino(self,gRojos,posRojos,posEspacios):
+        self.turno.config(state="disabled", bg='gray')
         corto=0
         pPartida=0 #punto de partida
         pLlegada=0 #putno de llegada
-        aux=0
-        for i in range(len(self.puertoAR)):
-            for j in range(len(self.puertoBR)):
-                if nx.has_path(gRojos,self.puertoAR[i],self.puertoBR[j]) is  True:
-                    aux=len(nx.dijkstra_path(gRojos,self.puertoAR[i],self.puertoBR[j]))
+        aux=r=c=0
+        posicion1=posicion2=0
+        for i in range(len(self.puertoARojos)):
+            for j in range(len(self.puertoBRojos)):
+                if nx.has_path(gRojos,self.puertoARojos[i],self.puertoBRojos[j]) is  True:
+                    aux=len(nx.dijkstra_path(gRojos,self.puertoARojos[i],self.puertoBRojos[j]))
 
                     if corto>aux and i!=0 and j!=0:
                         corto=aux
-                        pPartida=self.puertoAR[i]
-                        pLlegada=self.puertoBR[j]
+                        pPartida=self.puertoARojos[i]
+                        pLlegada=self.puertoBRojos[j]
                     else:
-                        corto=len(nx.dijkstra_path(gRojos,self.puertoAR[i],self.puertoBR[j]))
+                        corto=len(nx.dijkstra_path(gRojos,self.puertoARojos[i],self.puertoBRojos[j]))
                 else:
-                    self.puertoBR.pop(j)
+                    self.puertoBRojos.pop(j)
 
         #dibujar conexion
         caminoCorto=nx.dijkstra_path(gRojos,pPartida,pLlegada)
@@ -170,13 +182,14 @@ class App():
 
 
         for i in range(len(caminoCorto)):
-            print(caminoCorto)
+
             if i<len(caminoCorto)-1:
                 posicion1=caminoCorto[i]
                 posicion2=caminoCorto[i+1]
                 inicio.append(posRojos[posicion1])
+                inicio[0].append(posicion1)
                 fin.append(posRojos[posicion2])
-                print(posicion1,posicion2)
+                fin[0].append(posicion2)
                 r,c=self.encontrarEspacio(inicio,fin, self.listaEspacios,self.posicionesEspaciones,"rojo")
 
             if len(inicio)>0 and len(fin)>0:
@@ -193,13 +206,14 @@ class App():
                     self.caminoRojo.add_node(posicion1)
                     self.caminoRojo.add_node(posicion2)
                     self.caminoRojo.add_edge(posicion1,posicion2)
+                    self.comprobarWin('PC')
 
                     print(nx.edges(self.caminoRojo))
-                    self.comprobarWin()
+
                     break
 
     def turnoUsuario(self):
-        Label(self.ventana, text="Turno del jugador").place(x=500,y=400)
+        self.turno.config(state="normal",bg='green')
 
         if len(self.inicio)>0 and len(self.fin)>0:
             #funcion que activa a la computadora
@@ -210,19 +224,20 @@ class App():
             for i in range(len(self.fin)):
                 self.fin.pop(i)
 
-    def comprobarWin(self):
+    def comprobarWin(self,jugador):
+        if jugador=='PC':
+            for i in range(len(self.puertoARojos)):
+                for j in range(len(self.puertoBRojos)):
+                    if self.caminoRojo.has_node(self.puertoARojos[i]) is True and self.caminoRojo.has_node(self.puertoBRojos[j]) and nx.has_path(self.caminoRojo,self.puertoARojos[i],self.puertoBRojos[j]) is True:
+                        #self.win=True
 
-        for i in range(len(self.puertoAR)):
-            for j in range(len(self.puertoBR)):
-                #print(i,j)
-                #print(self.puertoAR[i],self.puertoBR[j])
-                #print(nx.has_path(self.caminoRojo,self.puertoAR[i],self.puertoBR[j]))
+                        Label(self.ventana,text='usted ha perdido', bg='red',fg='white').place(x=400,y=350)
+        else:
+            for i in range(len(self.puertoAAzules)):
+                for j in range(len(self.puertoBAzules)):
+                    if self.caminoAzules.has_node(self.puertoAAzules[i]) is True and self.caminoAzules.has_node(self.puertoBAzules[j]) and nx.has_path(self.caminoAzules,self.puertoAAzules[i],self.puertoBAzules[j]) is True:
 
-                #print(self.puertoAR[i],self.puertoBR[j])
-                if self.caminoRojo.has_node(self.puertoAR[i]) is True and self.caminoRojo.has_node(self.puertoBR[j]) and nx.has_path(self.caminoRojo,self.puertoAR[i],self.puertoBR[j]) is True:
-                    #self.win=True
-                    print('usted ha perdido')
-                    Label(self.ventana,text='usted ha perdido').place(x=500,y=200)
+                        Label(self.ventana,text='usted ha ganado', bg='green',fg='white').place(x=400,y=350)
 
     def partida(self,listaBotonesAzules,posicionesAzules,listaLabelsRojos,listaPosicionesRojos,listaEspacios,posicionesEspaciones):
         i=j=k=0 #indice par botones azules,rojos y espacios
@@ -233,8 +248,7 @@ class App():
             for c in range(0,11):
                 if r%2==0:
                     if c%2!=0:
-                        posicionesAzules.append([r,c])
-
+                        posicionesAzules.append([r,c,i])
                         listaBotonesAzules.append(Button(self.ventana, text=str(i),width=2,fg="white", bg="blue",
                         command=lambda id=i: [self.turnoUsuario(),self.eliminarVertice(posicionesAzules,id,
                         listaEspacios,posicionesEspaciones,listaPosicionesRojos,self.grafoRojos)]))

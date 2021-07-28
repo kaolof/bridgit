@@ -1,0 +1,52 @@
+Inicio Partida(){
+
+  1) Se crea el tablero para jugar con todos sus elementos: botones azules. rojos y espacios
+  2) A cada botón azul se le asigna al ser creado un evento de ratón que al hacer click se ejecute la funcion turnoJugador() y eliminarVertice
+  3) Los botones, etiqueta y espacios son guardados posteriormente en sus listas correspondiente para luego poder manipularlos
+  4) Se guardan las posiciones de cada botón, etiqueta y espacio en sus listas correspondientes
+  5) Cada etiqueta roja creada se agrega en el grafo llamado grafoRojos
+
+  asignarVertices()
+  eliminarVertice()
+  encontrarEspacio()
+  turnoJugador()
+  encontrarCamino()
+  encontrarEspacio()
+  comprobarWin()
+
+} Fin
+
+Inicio asignarVertices(posicionRojos, grafoRojos){
+
+  1) Con la lista delos posiciones de etiquetas rojas se buscan las etiquetas adyacentes de cada etiqueta
+  2) Cada etiqueta tiene su nodo en el grafo recibido por la funcion y al tener cuales son sus etiquetas adyacentes se agregan los vertices entre nodo y nodo
+
+} Fin
+
+Inicio eliminarVertice(){
+
+  1)Identificar la conexion entre botones azules que les usuario ha creado
+
+  encontrarEspacio()
+
+  2) al encontrar el espacio entre los botones se verifica si en los puntos adyacentes a dicho espacio existe un vertice entre etiquetas rojas en grafoRojos
+  3) De existir este se elimina indicando que la PC no puedo considerar un camino con dicho vertice
+
+}
+
+Inicio encontrar(){
+
+  1) primero se verifica si la conexion entre botones (en caso del jugador) o etiquetas (en caso de la PC) es vertical u horizontal
+  2) al encontrar la posicion de la conexion se busca el punto medio entre punto y punto que vendria a ser el espacio
+  3) luego de encontrar el espacio se verifica si esta conexion viene por parte del jugador o PC y de esta manera saber a que grafo se le
+  4)
+}
+
+Inicio turnoJugador(){
+
+  1) se verifica si el turno del jugador ha terminado
+  2) de haber terminado se ejecuta la funcion encontrarCamino()
+
+} Fin
+
+Inicio
