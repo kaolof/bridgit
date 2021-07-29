@@ -2,6 +2,8 @@
 
 Se ha implementado el algoritmo de Dijkstra con la ayuda de la libreria Networkx para la busqueda de caminos
 
+Intrucciones de ejecuciom
+
 Instrucciones para jugar:
 
 1) Al principio en la interfaz solo se va a conseguir un boton verde con la palabra star
